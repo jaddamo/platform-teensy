@@ -73,12 +73,8 @@ if env.BoardConfig().id_ in ("teensy35", "teensy36"):
 
 if "BOARD" in env:
     env.Append(
-        CCFLAGS=[
-            "-mcpu=%s" % env.BoardConfig().get("build.cpu")
-        ],
-        LINKFLAGS=[
-            "-mcpu=%s" % env.BoardConfig().get("build.cpu")
-        ]
+        CCFLAGS=[f'-mcpu={env.BoardConfig().get("build.cpu")}'],
+        LINKFLAGS=[f'-mcpu={env.BoardConfig().get("build.cpu")}'],
     )
 
 # copy CCFLAGS to ASFLAGS (-x assembler-with-cpp mode)

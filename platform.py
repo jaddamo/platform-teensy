@@ -60,9 +60,8 @@ class TeensyPlatform(PlatformBase):
             return result
         if id_:
             return self._add_default_debug_tools(result)
-        else:
-            for key, value in result.items():
-                result[key] = self._add_default_debug_tools(result[key])
+        for key, value in result.items():
+            result[key] = self._add_default_debug_tools(result[key])
         return result
 
     def _add_default_debug_tools(self, board):
@@ -73,8 +72,7 @@ class TeensyPlatform(PlatformBase):
             debug["tools"] = {}
 
         if "jlink" in upload_protocols and "jlink" not in debug["tools"]:
-            assert debug.get("jlink_device"), (
-                "Missed J-Link Device ID for %s" % board.id)
+            assert debug.get("jlink_device"), f"Missed J-Link Device ID for {board.id}"
             debug["tools"]["jlink"] = {
                 "server": {
                     "package": "tool-jlink",
@@ -96,8 +94,7 @@ class TeensyPlatform(PlatformBase):
 
     def configure_debug_options(self, initial_debug_options, ide_data):
         debug_options = copy.deepcopy(initial_debug_options)
-        adapter_speed = initial_debug_options.get("speed")
-        if adapter_speed:
+        if adapter_speed := initial_debug_options.get("speed"):
             server_options = debug_options.get("server") or {}
             server_executable = server_options.get("executable", "").lower()
             if "jlink" in server_executable:
