@@ -22,6 +22,7 @@ kinds of creative coding, interactive objects, spaces or physical experiences.
 http://arduino.cc/en/Reference/HomePage
 """
 
+
 from io import open
 from os import listdir
 from os.path import isdir, isfile, join
@@ -126,41 +127,32 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
 
     env.Append(
         ASFLAGS=["-x", "assembler-with-cpp"],
-
         CCFLAGS=[
-            "-Wall",  # show warnings
-            "-ffunction-sections",  # place each function in its own section
+            "-Wall",
+            "-ffunction-sections",
             "-fdata-sections",
             "-mthumb",
-            "-mcpu=%s" % env.BoardConfig().get("build.cpu"),
+            f'-mcpu={env.BoardConfig().get("build.cpu")}',
             "-nostdlib",
-            "-fsingle-precision-constant"
+            "-fsingle-precision-constant",
         ],
-
         CXXFLAGS=[
             "-fno-exceptions",
             "-felide-constructors",
             "-fno-rtti",
             "-std=gnu++14",
             "-Wno-error=narrowing",
-            "-fpermissive"
+            "-fpermissive",
         ],
-
-        CPPDEFINES=[
-            ("F_CPU", "$BOARD_F_CPU"),
-            "LAYOUT_US_ENGLISH"
-        ],
-
+        CPPDEFINES=[("F_CPU", "$BOARD_F_CPU"), "LAYOUT_US_ENGLISH"],
         RANLIBFLAGS=["-s"],
-
         LINKFLAGS=[
             "-Wl,--gc-sections,--relax",
             "-mthumb",
-            "-mcpu=%s" % env.BoardConfig().get("build.cpu"),
-            "-Wl,--defsym=__rtc_localtime=$UNIX_TIME"
+            f'-mcpu={env.BoardConfig().get("build.cpu")}',
+            "-Wl,--defsym=__rtc_localtime=$UNIX_TIME",
         ],
-
-        LIBS=["m", "stdc++"]
+        LIBS=["m", "stdc++"],
     )
 
     if not env.BoardConfig().get("build.ldscript", ""):
@@ -179,15 +171,8 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
             env.Append(CXXFLAGS=["-fno-threadsafe-statics"])
 
         env.Append(
-            CCFLAGS=[
-                "-mfloat-abi=hard",
-                "-mfpu=fpv%s-d16" % fpv_version
-            ],
-
-            LINKFLAGS=[
-                "-mfloat-abi=hard",
-                "-mfpu=fpv%s-d16" % fpv_version
-            ]
+            CCFLAGS=["-mfloat-abi=hard", f"-mfpu=fpv{fpv_version}-d16"],
+            LINKFLAGS=["-mfloat-abi=hard", f"-mfpu=fpv{fpv_version}-d16"],
         )
 
     # Optimization
@@ -274,13 +259,13 @@ if "cortex-m" in cpu:
     board = env.subst("$BOARD")
     math_lib = "arm_cortex%s_math"
     if board in ("teensy35", "teensy36"):
-        math_lib = math_lib % "M4lf"
+        math_lib %= "M4lf"
     elif board in ("teensy30", "teensy31"):
-        math_lib = math_lib % "M4l"
+        math_lib %= "M4l"
     elif board.startswith(("teensy4", "teensymm")):
-        math_lib = math_lib % "M7lfsp"
+        math_lib %= "M7lfsp"
     else:
-        math_lib = math_lib % "M0l"
+        math_lib %= "M0l"
 
     env.Prepend(LIBS=[math_lib])
 
